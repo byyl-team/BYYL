@@ -17,7 +17,9 @@ Exp : Exp ASSIGNOP Exp
     | ID
     | INT
     | FLOAT
+    ;
 Args : Exp COMMA Args
     | Exp
+    ;
 
 %%
