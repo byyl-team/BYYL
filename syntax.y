@@ -20,7 +20,7 @@ Exp     : Exp ASSIGNOP Exp  {$$=$1;}
         | Exp DIV Exp   {$$=$1/$2;}
         | LP Exp RP
         | MINUS Exp {$$=-1*$1;}
-	| NOT Exp       {$$=!$1}
+	| NOT Exp       {$$=!$1;}
         | ID LP Args RP
         | ID LP RP
         | Exp LB Exp RB
