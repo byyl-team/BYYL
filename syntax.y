@@ -2,28 +2,33 @@
 	#include <stdio.h>
 %}
 
-
+%union{
+    int type_int;
+    float type_float;
+}
+%token <type_int> INT
+%token <type_float> FLOAT
 
 %%
-Exp : Exp ASSIGNOP Exp
-    | Exp AND Exp
-    | Exp OR Exp
-    | Exp RELOP Exp
-    | Exp PLUS Exp
-    | Exp MINUS Exp
-    | Exp STAR Exp
-    | Exp DIV Exp
-    | LP Exp RP
-    | MINUS Exp
-    | NOT Exp
-    | ID LP Args RP
-    | ID LP RP
-    | Exp LB Exp RB
-    | Exp DOT ID
-    | ID
-    | INT
-    | FLOAT
-    ;
+Exp     : Exp ASSIGNOP Exp  {$$=$1;}
+	| Exp AND Exp   {$$=$1 && $2;}
+	| Exp OR Exp    {$$=$1 || $2;}
+	| Exp RELOP Exp
+        | Exp PLUS Exp  {$$=$1+$2;}
+        | Exp MINUS Exp     {$$=$1-$2;}
+        | Exp STAR Exp  {$$=$1*$2;}
+        | Exp DIV Exp   {$$=$1/$2;}
+        | LP Exp RP
+        | MINUS Exp {$$=-1*$1;}
+	| NOT Exp       {$$=!$1}
+        | ID LP Args RP
+        | ID LP RP
+        | Exp LB Exp RB
+        | Exp DOT ID
+        | ID
+        | INT   {$$=$1;}
+        | FLOAT     {$$=$1;}
+        ;
 Args : Exp COMMA Args
     | Exp
     ;
