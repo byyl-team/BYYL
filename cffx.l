@@ -88,13 +88,13 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     //printf("ERROR Type A at line %d char %d:Illgal INT16 number \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
     yylval = strtol(yytext,NULL,16);
-    return INT_ERROR;
+    return ERROR;
 }
 {INT8_ERROR} {
     //printf("ERROR Type A at line %d char %d: Illgal INT8 number \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
     yylval = strtol(yytext,NULL,8);
-    return INT_ERROR;
+    return ERROR;
 }
 {STRUCT} {
     column+=yyleng;
@@ -227,7 +227,7 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 {FLOAT_ERROR} {
     //printf("Error Type A at line %d,char %d:  Illgal float number: \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
-    return FLOATERROR;
+    return ERROR;
 }
 . { 
     //printf("UNDEFINED at line %d char %d: %s\n",yylineno,column,yytext);
