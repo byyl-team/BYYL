@@ -52,11 +52,11 @@ INT8_ERROR 0[0-7]*[89]+[0-7]*
 IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 %%
 {COMMENTM} {
-    printf("NOTE at line %d char %d:%s \n",yylineno,column,yytext);  //多行注释
+    //printf("NOTE at line %d char %d:%s \n",yylineno,column,yytext);  //多行注释
     column = (nad = strrchr(yytext,n))==NULL?(column+yyleng):(yyleng-(nad-yytext)); //根据多行注释最后换行符的位置，更新当前的列指针
 }
 {COMMENTS} {
-    printf("NOTE at line %d char %d:%s \n",yylineno,column,yytext);  //单行注释
+    //printf("NOTE at line %d char %d:%s \n",yylineno,column,yytext);  //单行注释
     column+=yyleng;
 }
 {SPACE} {

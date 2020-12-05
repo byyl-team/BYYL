@@ -1,109 +1,102 @@
 %{
 	#include <stdio.h>
-	#include<unistd.h>
-	#include "gramtree.h"
 %}
-%union
-{
-	struct gramtree* newfather;
-	double d;
-}
-%token <newfather> INT FLOAT 
-%token <newfather> ID STRUCT TYPE RETURN IF ELSE WHILE SPACE COMMA SEMI ASSIGNOP RELOP PLUS MINUS STAR DIV AND OR NOT LB RB LP RP LC RC ERROR DOT
-%type <newfather> Program ExtDefList ExtDef ExtDecList Specifier StructSpecifier OptTag Tag VarDec FunDec VarList ParamDec CompSt StmtList Stmt DefList Def DecList Dec Exp Args
 %right ASSIGNOP
+%right NOT
 %left AND OR
 %left RELOP
 %left PLUS MINUS
 %left STAR DIV
-%right NOT
 %left LB RB LP RP LC RC
 %left DOT 
+%token COMMA SEMI
+%token INT FLOAT ID STRUCT TYPE
+%token RETURN IF ELSE WHILE 
+%token ERROR
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 %%
-Program : ExtDefList {$$=gramTree("Program",1,$1);printf("\n");circulate($$,0);}
+ExProgram : ExtDefList
 	;
-ExtDefList : ExtDef ExtDefList{$$=gramTree("ExtDefList",2,$1,$2);}
-	| {$$=gramTree("ExtDefList",0,-1);}
+ExtDefList : ExtDef ExtDefList
+	| /* empty */
 	;
-ExtDef : Specifier ExtDecList SEMI{$$=gramTree("ExtDef",3,$1,$2,$3);} 
-	| Specifier SEMI{$$=gramTree("ExtDef",2,$1,$2);}
-	|Specifier FunDec CompSt {$$=gramTree("ExtDef",3,$1,$2,$3);}
+ExtDef : Specifier ExtDecList SEMI
+	| Specifier SEMI
+	|Specifier FunDec CompSt
 	;
-ExtDecList : VarDec{$$=gramTree("ExtDecList",1,$1);}
-	| VarDec COMMA ExtDecList{$$=gramTree("ExtDecList",3,$1,$2,$3);}
+ExtDecList : VarDec
+	| VarDec COMMA ExtDecList
 	;
-Specifier : TYPE {$$=gramTree("Specifire",1,$1);}
-	| StructSpecifier {$$=gramTree("Specifire",1,$1);}
+Exp : Exp ASSIGNOP Exp 
+    | Exp AND Exp { $$ = $1 && $3; }
+    | Exp OR Exp { $$ = $1 || $3; } 
+    | Exp RELOP Exp 
+    | Exp PLUS Exp  { $$ = $1 + $3; }
+    | Exp MINUS Exp { $$ = $1 - $3; }
+    | Exp STAR Exp { $$ = $1 * $3; }
+    | Exp DIV Exp { $$ = $1 / $3; }
+    | LP Exp RP
+    | MINUS Exp
+    | NOT Exp
+    | ID LP Args RP
+    | ID LP RP
+    | Exp LB Exp RB
+    | Exp DOT ID
+    | ID
+    | INT
+    | FLOAT
+    ;
+Args : Exp COMMA Args
+    | Exp
+    ;
+DefList : /* empty */
+	| Def DefList
 	;
-StructSpecifier : STRUCT OptTag LC DefList RC{$$=gramTree("StructSpecifire",5,$1,$2,$3,$4,$5);}
-	| STRUCT Tag{$$=gramTree("StructSpecifire",2,$1,$2);}
+Def : Specifier DecList SEMI
 	;
-OptTag : ID{$$=gramTree("OptTag",1,$1);}
-	| {$$=gramTree("OptTag",0,-1);}
+DecList : Dec
+	| Dec COMMA DecList
 	;
-Tag : ID{$$=gramTree("Tag",1,$1);}
+Dec : VarDec
+	| VarDec ASSIGNOP Exp
 	;
-VarDec : ID{$$=gramTree("VarDec",1,$1);}
-	| VarDec LB INT RB{$$=gramTree("VarDec",4,$1,$2,$3,$4);}
+CompSt : LC DefList StmtList RC
 	;
-FunDec : ID LP VarList RP{$$=gramTree("FunDec",4,$1,$2,$3,$4);}
-	| ID LP RP{$$=gramTree("FunDec",3,$1,$2,$3);}
+StmtList : /* empty */
+	| Stmt StmtList
 	;
-VarList : ParamDec COMMA VarList  {$$=gramTree("VarList",3,$1,$2,$3);}
-	| ParamDec {$$=gramTree("VarList",1,$1);}
+Stmt : Exp SEMI
+	| CompSt
+	| RETURN Exp SEMI
+	| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE
+	| IF LP Exp RP Stmt ELSE Stmt
+	| WHILE LP Exp RP Stmt
 	;
-ParamDec : Specifier VarDec{$$=gramTree("ParamDec",2,$1,$2);}
+VarDec : ID
+	| VarDec LB INT RB
 	;
-CompSt : LC DefList StmtList RC{$$=gramTree("Compst",4,$1,$2,$3,$4);}
+FunDec : ID LP VarList RP
+	| ID LP RP
 	;
-StmtList : {$$=gramTree("StmtList",0,-1);}
-	| Stmt StmtList{$$=gramTree("StmtList",2,$1,$2);}
+VarList : ParamDec COMMA VarList
+	| ParamDec
 	;
-Stmt : Exp SEMI {$$=gramTree("Stmt",2,$1,$2);}
-	| CompSt {$$=gramTree("Stmt",1,$1);}
-	|RETURN Exp SEMI {$$=gramTree("Stmt",3,$1,$2,$3);}
-	|IF LP Exp RP Stmt {$$=gramTree("Stmt",5,$1,$2,$3,$4,$5);}
-	|IF LP Exp RP Stmt ELSE Stmt {$$=gramTree("Stmt",7,$1,$2,$3,$4,$5,$6,$7);}
-	|WHILE LP Exp RP Stmt {$$=gramTree("Stmt",5,$1,$2,$3,$4,$5);}
+ParamDec : Specifier VarDec
 	;
-DefList : Def DefList{$$=gramTreet("DefList",2,$1,$2);}
-	| {$$=gramTree("DefList",0,-1);}
+Specifier : TYPE
+	| StructSpecifier
 	;
-Def : Specifier DecList SEMI {$$=gramTree("Def",3,$1,$2,$3);}
+StructSpecifier : STRUCT OptTag LC DefList RC
+	| STRUCT Tag
 	;
-DecList : Dec {$$=gramTree("DecList",1,$1);}
-	|Dec COMMA DecList {$$=gramTree("DecList",3,$1,$2,$3);}
+OptTag : ID
+	| /* empty */
 	;
-Dec : VarDec {$$=gramTree("Dec",1,$1);}
-	|VarDec ASSIGNOP Exp {$$=gramTree("Dec",3,$1,$2,$3);}
+Tag : ID
 	;
-Exp : Exp ASSIGNOP Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp AND Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp OR Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp RELOP Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp PLUS Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp MINUS Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp STAR Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp DIV Exp{$$=gramTree("Exp",3,$1,$2,$3);}
-        |LP Exp RP{$$=gramTree("Exp",3,$1,$2,$3);}
-        |MINUS Exp {$$=gramTree("Exp",2,$1,$2);}
-        |NOT Exp {$$=gramTree("Exp",2,$1,$2);}
-        |ID LP Args RP {$$=gramTree("Exp",4,$1,$2,$3,$4);}
-        |ID LP RP {$$=gramTree("Exp",3,$1,$2,$3);}
-        |Exp LB Exp RB {$$=gramTree("Exp",4,$1,$2,$3,$4);}
-        |Exp DOT ID {$$=gramTree("Exp",3,$1,$2,$3);}
-        |ID {$$=gramTree("Exp",1,$1);}
-        |INT {$$=gramTree("Exp",1,$1);}
-        |FLOAT{$$=gramTree("Exp",1,$1);}
-        ;
-Args : Exp COMMA Args {$$=gramTree("Args",3,$1,$2,$3);}
-        |Exp {$$=gramTree("Args",1,$1);}
-        ;
 %%
 #include "lex.yy.c"
-/*
 int main(int argc,char** argv){
 	if(argc <= 1) return 1;
   	FILE* f = fopen(argv[1], "r");
@@ -113,11 +106,11 @@ int main(int argc,char** argv){
     		return 1;
   	}
 	yyrestart(f);
+        //yydebug = 1;
 	yyparse();
 	return 0;
 }
 yyerror(char *msg)
 {
 	fprintf(stderr,"error:%s\n",msg);
-}*/
-
+}
