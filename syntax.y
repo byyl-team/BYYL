@@ -1,18 +1,41 @@
 %{
 	#include <stdio.h>
 %}
+%right ASSIGNOP
+%left AND OR
+%left PLUS MINUS
+%left STAR DIV
+%left RELOP
+%token NOT
+%token LB RB LP RP
+%token DOT 
+%token COMMA SEMI
+%token INT FLOAT ID STRUCT TYPE
+%token RETURN IF ELSE WHILE LC RC
 
-
-
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 %%
-Exp : Exp ASSIGNOP Exp
-    | Exp AND Exp
-    | Exp OR Exp
-    | Exp RELOP Exp
-    | Exp PLUS Exp
-    | Exp MINUS Exp
-    | Exp STAR Exp
-    | Exp DIV Exp
+ExProgram : ExtDefList
+	;
+ExtDefList : ExtDef ExtDefList
+	| /* empty */
+	;
+ExtDef : Specifier ExtDecList SEMI
+	| Specifier SEMI
+	|Specifier FunDec CompSt
+	;
+ExtDecList : VarDec
+	| VarDec COMMA ExtDecList
+	;
+Exp : Exp ASSIGNOP Exp 
+    | Exp AND Exp { $$ = $1 && $3; }
+    | Exp OR Exp { $$ = $1 || $3; } 
+    | Exp RELOP Exp 
+    | Exp PLUS Exp  { $$ = $1 + $3; }
+    | Exp MINUS Exp { $$ = $1 - $3; }
+    | Exp STAR Exp { $$ = $1 * $3; }
+    | Exp DIV Exp { $$ = $1 / $3; }
     | LP Exp RP
     | MINUS Exp
     | NOT Exp
@@ -46,7 +69,7 @@ StmtList : /* empty */
 Stmt : Exp SEMI
 	| CompSt
 	| RETURN Exp SEMI
-	| IF LP Exp RP Stmt
+	| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE
 	| IF LP Exp RP Stmt ELSE Stmt
 	| WHILE LP Exp RP Stmt
 	;
@@ -71,18 +94,6 @@ OptTag : ID
 	| /* empty */
 	;
 Tag : ID
-	;
-Program : ExtDefList
-	;
-ExtDefList : ExtDef ExtDefList
-	| /* empty */
-	;
-ExtDef : Specifier ExtDecList SEMI
-	| Specifier SEMI
-	|Specifier FunDec CompSt
-	;
-ExtDecList : VarDec
-	| VarDec COMMA ExtDecList
 	;
 %%
 #include "lex.yy.c"
