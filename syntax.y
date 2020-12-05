@@ -1,9 +1,19 @@
 %{
 	#include <stdio.h>
+	#include"lex.yy.c"
 %}
 
-
-
+%token ASSIGNOP
+%token AND OR
+%token RELOP
+%token PLUS MINUS
+%token STAR DIV
+%token NOT
+%token LB RB LP RP
+%token DOT 
+%token COMMA SEMI
+%token INT FLOAT ID STRUCT TYPE
+%token RETURN IF ELSE WHILE LC RC
 %%
 Exp : Exp ASSIGNOP Exp
     | Exp AND Exp
