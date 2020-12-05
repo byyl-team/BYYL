@@ -2,16 +2,17 @@
 	#include <stdio.h>
 %}
 %right ASSIGNOP
+%right NOT
 %left AND OR
+%left RELOP
 %left PLUS MINUS
 %left STAR DIV
-%left RELOP
-%token NOT
-%token LB RB LP RP
-%token DOT 
+
+%left LB RB LP RP LC RC
+%left DOT 
 %token COMMA SEMI
 %token INT FLOAT ID STRUCT TYPE
-%token RETURN IF ELSE WHILE LC RC
+%token RETURN IF ELSE WHILE 
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
