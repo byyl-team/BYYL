@@ -7,13 +7,12 @@
 %left RELOP
 %left PLUS MINUS
 %left STAR DIV
-
 %left LB RB LP RP LC RC
 %left DOT 
 %token COMMA SEMI
 %token INT FLOAT ID STRUCT TYPE
 %token RETURN IF ELSE WHILE 
-
+%token ERROR
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 %%
