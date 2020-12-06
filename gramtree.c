@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdarg.h>
+#include<string.h>
 #include"gramtree.h"
 struct gramtree *gramTree(char* name,int num,...)
 {
@@ -13,7 +14,7 @@ struct gramtree *gramTree(char* name,int num,...)
 		exit(0);
 	}
 	newfather->name=name;
-	va_start(valist,num);
+	va_start(valist,num);//初始化变长参数为num后的参数
 	if(num>0)//num>0为非终结符：变长参数均为语法树结点，孩子兄弟表示法
     	{
         	temp=va_arg(valist, struct gramtree*);//取变长参数列表中的第一个结点设为左孩子
