@@ -3,7 +3,7 @@
 	#include <stdio.h>
 	#include<string.h>
 	#include<regex.h>
-	#include"syntax.tab.c"
+	#include"syntax.tab.h"
 	#include"gramtree.h"
 	FILE* f;
 	int column = 1;  //记录该行第几个字符
@@ -68,7 +68,7 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 {INT} {
 	//printf("INT data at line %d char %d: %s\n",yylineno,column,yytext);
 	column+=yyleng;
-	yylval = atoi(yytext);
+	//yylval = atoi(yytext);
 	yylval.newfather=gramTree("INT",0,yylineno);
 	return INT;
 	
@@ -77,25 +77,29 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 {INT16} {
 	//printf("INT16 at line %d char %d: charachters \"%s\"\n",yylineno,column,yytext);
 	column+=yyleng;
-	yylval = strtol(yytext,NULL,16);
+	yylval.newfather=gramTree("INT16",0,yylineno);
+	//yylval = strtol(yytext,NULL,16);
 	return INT;
 }
 {INT8} {
     //printf("INT8 at line %d char %d: charachters \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
-    yylval = strtol(yytext,NULL,8);
+    yylval.newfather=gramTree("INT8",0,yylineno);
+    //yylval = strtol(yytext,NULL,8);
     return INT;
 }
 {INT16_ERROR} {
     //printf("ERROR Type A at line %d char %d:Illgal INT16 number \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
-    yylval = strtol(yytext,NULL,16);
+    yylval.newfather=gramTree("ERROR",0,yylineno);
+    //yylval = strtol(yytext,NULL,16);
     return ERROR;
 }
 {INT8_ERROR} {
     //printf("ERROR Type A at line %d char %d: Illgal INT8 number \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
-    yylval = strtol(yytext,NULL,8);
+    yylval.newfather=gramTree("ERROR",0,yylineno);
+    //yylval = strtol(yytext,NULL,8);
     return ERROR;
 }
 {STRUCT} {
@@ -246,7 +250,8 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 {FLOAT} {
     //printf("FLOAT at line %d char %d:%s\n",yylineno,column,yytext);
     column+=yyleng;
-    yylval = atof(yytext);
+    yylval.newfather=gramTree("FLOAT",0,yylineno);
+    //yylval = atof(yytext);
     return FLOAT;
 }
 {FLOAT_ERROR} {
@@ -273,3 +278,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 */
+int yywrap()
+{
+        return 1;
+}
