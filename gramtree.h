@@ -20,4 +20,4 @@ name：语素名字
 num：变长参数中语法节点个数*/
 struct gramtree *gramTree(char* name,int num,...);
 /*遍历抽象语法树，level为树的层次*/
-void circulate(struct gramtree*,int level);
+void circulate(struct gramtree* newfather,int level);
