@@ -12,7 +12,7 @@
 	double d;
 }
 %token <newfather> INT FLOAT 
-%token <newfather> ID STRUCT TYPE RETURN IF ELSE WHILE SPACE COMMA SEMI ASSIGNOP RELOP PLUS MINUS STAR DIV AND OR NOT LB RB LP RP LC RC ERROR DOT
+%token <newfather> ID STRUCT TYPE RETURN IF ELSE WHILE SPACE SPACEN COMMA SEMI ASSIGNOP RELOP PLUS MINUS STAR DIV AND OR NOT LB RB LP RP LC RC ERROR DOT 
 %type <newfather> Program ExtDefList ExtDef ExtDecList Specifier StructSpecifier OptTag Tag VarDec FunDec VarList ParamDec CompSt StmtList Stmt DefList Def DecList Dec Exp Args
 %right ASSIGNOP
 %left AND OR
