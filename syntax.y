@@ -2,6 +2,8 @@
 	#include <stdio.h>
 	#include<unistd.h>
 	#include "gramtree.h"
+	int yylex();
+	int yyrestart();
 	//#include "lex.yy.c"
 %}
 %union
