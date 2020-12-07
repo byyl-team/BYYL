@@ -103,7 +103,7 @@ Args : Exp COMMA Args {$$=gramTree("Args",3,$1,$2,$3);}
         |Exp {$$=gramTree("Args",1,$1);}
         ;
 %%
-/*
+
 int main(int argc,char** argv){
 	if(argc <= 1) return 1;
   	FILE* f = fopen(argv[1], "r");
@@ -116,6 +116,7 @@ int main(int argc,char** argv){
 	yyparse();
 	return 0;
 }
+/*
 yyerror(char *msg)
 {
 	fprintf(stderr,"error:%s\n",msg);
