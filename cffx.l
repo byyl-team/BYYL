@@ -60,10 +60,15 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 }
 {SPACE} {
     // printf("space at line %d char %d:%s!\n",yylineno,column,yytext);
+    
     column+=yyleng;
+    //yylval.newfather=gramTree("SPACE",0,yylineno);
+    //return SPACE;
 }
 {SPACEN} {
     column = 1;  //出现换行符，列指针回到开头
+    //yylval.newfather=gramTree("SPACE",0,yylineno);
+    //return SPACE;
 }
 {INT} {
 	//printf("INT data at line %d char %d: %s\n",yylineno,column,yytext);
