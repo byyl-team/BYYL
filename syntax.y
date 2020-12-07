@@ -35,11 +35,11 @@ ExtDef : Specifier ExtDecList SEMI{$$=gramTree("ExtDef",3,$1,$2,$3);}
 ExtDecList : VarDec{$$=gramTree("ExtDecList",1,$1);}
 	| VarDec COMMA ExtDecList{$$=gramTree("ExtDecList",3,$1,$2,$3);}
 	;
-Specifier : TYPE {$$=gramTree("Specifire",1,$1);}
-	| StructSpecifier {$$=gramTree("Specifire",1,$1);}
+Specifier : TYPE {$$=gramTree("Specifier",1,$1);}
+	| StructSpecifier {$$=gramTree("Specifier",1,$1);}
 	;
-StructSpecifier : STRUCT OptTag LC DefList RC{$$=gramTree("StructSpecifire",5,$1,$2,$3,$4,$5);}
-	| STRUCT Tag{$$=gramTree("StructSpecifire",2,$1,$2);}
+StructSpecifier : STRUCT OptTag LC DefList RC{$$=gramTree("StructSpecifier",5,$1,$2,$3,$4,$5);}
+	| STRUCT Tag{$$=gramTree("StructSpecifier",2,$1,$2);}
 	;
 OptTag : ID{$$=gramTree("OptTag",1,$1);}
 	| {$$=gramTree("OptTag",0,-1);}
