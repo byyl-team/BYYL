@@ -34,13 +34,14 @@ struct gramtree *gramTree(char* name,int num,...)
     	{
         	int t=va_arg(valist, int); //取第1个变长参数
         	newfather->lineno=t;
-        	if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE")))//"ID,TYPE,INTEGER，借助union保存yytext的值
+        	if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE"))||(!strcmp(newfather->name,"RELOP")))//"ID,TYPE,INTEGER，借助union保存yytext的值
         	{
         		char*t;
         		t=(char*)malloc(sizeof(char* )*40);
         		strcpy(t,yytext);
         		newfather->IDTYPE=t;
         	}
+        	
         	else if(!strcmp(newfather->name,"INT")) {newfather->INT=atoi(yytext);}
         	else {}
     	}
@@ -54,10 +55,37 @@ void circulate(struct gramtree* newfather,int level)
             		printf("  ");
         	if(newfather->lineno!=-1){ //产生空的语法单元不需要打印信息
             		printf("%s ",newfather->name);//打印语法单元名字，ID/TYPE/INTEGER要打印yytext的值
-            		if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE")))printf(":%s ",newfather->IDTYPE);
-            	else if(!strcmp(newfather->name,"INT"))printf(":%d",newfather->INT);
-            	else
-                	printf("(%d)",newfather->lineno);
+            		if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE"))||(!strcmp(newfather->name,"RELOP")))printf(":%s ",newfather->IDTYPE);
+            		else if(!strcmp(newfather->name,"INT"))printf(":%d",newfather->INT);
+            		else if(!strcmp(newfather->name,"STRUCT")) printf(":struct");
+            		else if(!strcmp(newfather->name,"RETURN")) printf(":return");
+            		else if(!strcmp(newfather->name,"WHILE")) printf(":while");
+            		else if(!strcmp(newfather->name,"IF")) printf(":if");
+            		else if(!strcmp(newfather->name,"ELSE")) printf(":else");
+            		else if(!strcmp(newfather->name,"SEMI")) printf(":;");
+            		else if(!strcmp(newfather->name,"COMMA")) printf(":,");
+            		else if(!strcmp(newfather->name,"PLUS")) printf(":+");
+            		else if(!strcmp(newfather->name,"MINUS")) printf(":-");
+            		else if(!strcmp(newfather->name,"ASSIGNOP")) printf(":=");
+            		else if(!strcmp(newfather->name,"STAR")) printf(":*");
+            		else if(!strcmp(newfather->name,"DIV")) printf(":/");
+            		else if(!strcmp(newfather->name,"AND")) printf(":&&");
+            		else if(!strcmp(newfather->name,"OR")) printf(":||");
+            		else if(!strcmp(newfather->name,"DOT")) printf(":.");
+            		else if(!strcmp(newfather->name,"NOT")) printf(":!");
+            		else if(!strcmp(newfather->name,"LP")) printf(":(");
+            		else if(!strcmp(newfather->name,"RP")) printf(":)");
+            		else if(!strcmp(newfather->name,"LB")) printf(":[");
+            		else if(!strcmp(newfather->name,"RB")) printf(":]");
+            		else if(!strcmp(newfather->name,"LC")) printf(":{");
+            		else if(!strcmp(newfather->name,"RC")) printf(":}");
+            		else if((!strcmp(newfather->name,"SPACEN"))||(!strcmp(newfather->name,"SPACE"))) printf(":space");
+            		else
+                		printf("(%d)",newfather->lineno);
+        }
+        else
+        {
+        	printf("Empty : Empty");
         }
         printf("\n");
 
