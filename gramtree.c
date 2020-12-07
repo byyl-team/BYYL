@@ -73,8 +73,8 @@ void yyerror(char*s,...) //变长参数错误处理函数
     vfprintf(stderr,s,ap);
     fprintf(stderr,"\n");
 }
-int main()
+/*int main()
 {
     printf(">");
     return yyparse(); //启动文法分析，调用词法分析
-}
+}*/
