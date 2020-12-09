@@ -136,11 +136,11 @@ Exp : Exp ASSIGNOP Exp{$$=gramTree("Exp",3,$1,$2,$3);}
 |Exp_miss_RP {$$=gramTree("Exp",1,$1);}
 |Exp_miss_RB {$$=gramTree("Exp",1,$1);}
 ;
-Exp_miss_RP : ID LP Args %prec LOWER_THAN_Exp_RP{$$=gramTree("Exp_miss_RP",3,$1,$2,$3);printf("missing RP at %d Exp_miss_RP\n",$3->lineno);}
-|LP Exp %prec LOWER_THAN_Exp_RP{$$=gramTree("Exp_miss_RP",2,$1,$2);printf("missing RP at %d Exp_miss_RP\n",$2->lineno);}
-|ID LP %prec LOWER_THAN_Exp_RP{$$=gramTree("Exp_miss_RP",2,$1,$2);printf("missing RP at %d Exp_miss_RP\n",$2->lineno);}
+Exp_miss_RP : ID LP Args %prec LOWER_THAN_Exp_RP{$$=gramTree("Exp_miss_RP",3,$1,$2,$3);printf("missing RP at %d\n",$3->lineno);}
+|LP Exp %prec LOWER_THAN_Exp_RP{$$=gramTree("Exp_miss_RP",2,$1,$2);printf("missing RP at %d\n",$2->lineno);}
+|ID LP %prec LOWER_THAN_Exp_RP{$$=gramTree("Exp_miss_RP",2,$1,$2);printf("missing RP at %d\n",$2->lineno);}
 ;
-Exp_miss_RB : Exp LB Exp %prec LOWER_THAN_Exp_RB{$$=gramTree("Exp_miss_RB",3,$1,$2,$3);printf("missing RP at %d Exp_miss_RP\n",$3->lineno);}
+Exp_miss_RB : Exp LB Exp %prec LOWER_THAN_Exp_RB{$$=gramTree("Exp_miss_RB",3,$1,$2,$3);printf("missing RB at %d\n",$3->lineno);}
 ;
 Args : Exp COMMA Args {$$=gramTree("Args",3,$1,$2,$3);}
 |Exp {$$=gramTree("Args",1,$1);}

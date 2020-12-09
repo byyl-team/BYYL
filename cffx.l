@@ -224,7 +224,7 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     return LB;
 }
 {RB} { 
-    printf("RB at line %d char %d: %s\n",yylineno,column,yytext);
+    //printf("RB at line %d char %d: %s\n",yylineno,column,yytext);
     column+=yyleng;
     yylval.newfather=gramTree("RB",0,yylineno);
     return RB;
