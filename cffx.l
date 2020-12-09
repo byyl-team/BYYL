@@ -3,7 +3,7 @@
 	#include <stdio.h>
 	#include<string.h>
 	#include<regex.h>
-	#include"syntax.tab.h"
+	#include"syntax7.tab.h"
 	#include"gramtree.h"
 	FILE* f;
 	int column = 1;  //记录该行第几个字符
@@ -60,15 +60,10 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 }
 {SPACE} {
     // printf("space at line %d char %d:%s!\n",yylineno,column,yytext);
-    
     column+=yyleng;
-    //yylval.newfather=gramTree("SPACE",0,yylineno);
-    //return SPACE;
 }
 {SPACEN} {
     column = 1;  //出现换行符，列指针回到开头
-    //yylval.newfather=gramTree("SPACE",0,yylineno);
-    //return SPACE;
 }
 {INT} {
 	//printf("INT data at line %d char %d: %s\n",yylineno,column,yytext);
@@ -94,14 +89,14 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     return INT;
 }
 {INT16_ERROR} {
-    //printf("ERROR Type A at line %d char %d:Illgal INT16 number \"%s\"\n",yylineno,column,yytext);
+    printf("ERROR Type A at line %d char %d:Illgal INT16 number \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
     yylval.newfather=gramTree("ERROR",0,yylineno);
     //yylval = strtol(yytext,NULL,16);
     return ERROR;
 }
 {INT8_ERROR} {
-    //printf("ERROR Type A at line %d char %d: Illgal INT8 number \"%s\"\n",yylineno,column,yytext);
+    printf("ERROR Type A at line %d char %d: Illgal INT8 number \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
     yylval.newfather=gramTree("ERROR",0,yylineno);
     //yylval = strtol(yytext,NULL,8);
@@ -229,7 +224,7 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     return LB;
 }
 {RB} { 
-    //printf("RB at line %d char %d: %s\n",yylineno,column,yytext);
+    printf("RB at line %d char %d: %s\n",yylineno,column,yytext);
     column+=yyleng;
     yylval.newfather=gramTree("RB",0,yylineno);
     return RB;
@@ -260,12 +255,12 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     return FLOAT;
 }
 {FLOAT_ERROR} {
-    //printf("Error Type A at line %d,char %d:  Illgal float number: \"%s\"\n",yylineno,column,yytext);
+    printf("Error Type A at line %d,char %d:  Illgal float number: \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
     return ERROR;
 }
 . { 
-    //printf("UNDEFINED at line %d char %d: %s\n",yylineno,column,yytext);
+    printf("Error type A at line %d:Mysterious character '%s'\n",yylineno,yytext);
     column+=yyleng;
 }
 
