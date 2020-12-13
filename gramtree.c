@@ -3,8 +3,10 @@
 #include<stdarg.h>
 #include<string.h>
 #include"gramtree.h"
+#define YYERROR_VERBOSE
 struct gramtree *gramTree(char* name,int num,...)
 {
+	int flag=1;
 	va_list valist;//定义变长参数列表
 	struct gramtree *newfather=(struct gramtree *)malloc(sizeof(struct gramtree));//新生成的父节点
 	struct gramtree *temp=(struct gramtree*)malloc(sizeof(struct gramtree));
@@ -47,59 +49,61 @@ struct gramtree *gramTree(char* name,int num,...)
     	}
     	return newfather;
 }
-void circulate(struct gramtree* newfather,int level)
+void circulate(struct gramtree* newfather,int level,int flag)
 {
-	if(newfather!=NULL)
-    	{
-        	for(int i=0; i<level; ++i)//孩子结点相对父节点缩进2个空格
-            		printf("  ");
-        	if(newfather->lineno!=-1){ //产生空的语法单元不需要打印信息
-            		printf("%s ",newfather->name);//打印语法单元名字，ID/TYPE/INTEGER要打印yytext的值
-            		if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE"))||(!strcmp(newfather->name,"RELOP")))printf(":%s ",newfather->IDTYPE);
-            		else if(!strcmp(newfather->name,"INT"))printf(":%d",newfather->INT);
-            		else if(!strcmp(newfather->name,"STRUCT")) printf(":struct");
-            		else if(!strcmp(newfather->name,"RETURN")) printf(":return");
-            		else if(!strcmp(newfather->name,"WHILE")) printf(":while");
-            		else if(!strcmp(newfather->name,"IF")) printf(":if");
-            		else if(!strcmp(newfather->name,"ELSE")) printf(":else");
-            		else if(!strcmp(newfather->name,"SEMI")) printf(":;");
-            		else if(!strcmp(newfather->name,"COMMA")) printf(":,");
-            		else if(!strcmp(newfather->name,"PLUS")) printf(":+");
-            		else if(!strcmp(newfather->name,"MINUS")) printf(":-");
-            		else if(!strcmp(newfather->name,"ASSIGNOP")) printf(":=");
-            		else if(!strcmp(newfather->name,"STAR")) printf(":*");
-            		else if(!strcmp(newfather->name,"DIV")) printf(":/");
-            		else if(!strcmp(newfather->name,"AND")) printf(":&&");
-            		else if(!strcmp(newfather->name,"OR")) printf(":||");
-            		else if(!strcmp(newfather->name,"DOT")) printf(":.");
-            		else if(!strcmp(newfather->name,"NOT")) printf(":!");
-            		else if(!strcmp(newfather->name,"LP")) printf(":(");
-            		else if(!strcmp(newfather->name,"RP")) printf(":)");
-            		else if(!strcmp(newfather->name,"LB")) printf(":[");
-            		else if(!strcmp(newfather->name,"RB")) printf(":]");
-            		else if(!strcmp(newfather->name,"LC")) printf(":{");
-            		else if(!strcmp(newfather->name,"RC")) printf(":}");
-            		else if((!strcmp(newfather->name,"SPACEN"))||(!strcmp(newfather->name,"SPACE"))) printf(":space");
-            		else
-                		printf("(%d)",newfather->lineno);
-        }
-        else
-        {
-        	printf("Empty : Empty");
-        }
-        printf("\n");
-
-        circulate(newfather->leftchild,level+1);//遍历左子树
-        circulate(newfather->rightchild,level);//遍历右子树
+	if(flag==1){
+		if(newfather!=NULL)
+	    	{
+			for(int i=0; i<level; ++i)//孩子结点相对父节点缩进2个空格
+		    		printf("  ");
+			if(newfather->lineno!=-1){ //产生空的语法单元不需要打印信息
+		    		printf("%s ",newfather->name);//打印语法单元名字，ID/TYPE/INTEGER要打印yytext的值
+		    		if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE"))||(!strcmp(newfather->name,"RELOP")))printf(":%s ",newfather->IDTYPE);
+		    		else if(!strcmp(newfather->name,"INT"))printf(":%d",newfather->INT);
+		    		else if(!strcmp(newfather->name,"STRUCT")) printf(":struct");
+		    		else if(!strcmp(newfather->name,"RETURN")) printf(":return");
+		    		else if(!strcmp(newfather->name,"WHILE")) printf(":while");
+		    		else if(!strcmp(newfather->name,"IF")) printf(":if");
+		    		else if(!strcmp(newfather->name,"ELSE")) printf(":else");
+		    		else if(!strcmp(newfather->name,"SEMI")) printf(":;");
+		    		else if(!strcmp(newfather->name,"COMMA")) printf(":,");
+		    		else if(!strcmp(newfather->name,"PLUS")) printf(":+");
+		    		else if(!strcmp(newfather->name,"MINUS")) printf(":-");
+		    		else if(!strcmp(newfather->name,"ASSIGNOP")) printf(":=");
+		    		else if(!strcmp(newfather->name,"STAR")) printf(":*");
+		    		else if(!strcmp(newfather->name,"DIV")) printf(":/");
+		    		else if(!strcmp(newfather->name,"AND")) printf(":&&");
+		    		else if(!strcmp(newfather->name,"OR")) printf(":||");
+		    		else if(!strcmp(newfather->name,"DOT")) printf(":.");
+		    		else if(!strcmp(newfather->name,"NOT")) printf(":!");
+		    		else if(!strcmp(newfather->name,"LP")) printf(":(");
+		    		else if(!strcmp(newfather->name,"RP")) printf(":)");
+		    		else if(!strcmp(newfather->name,"LB")) printf(":[");
+		    		else if(!strcmp(newfather->name,"RB")) printf(":]");
+		    		else if(!strcmp(newfather->name,"LC")) printf(":{");
+		    		else if(!strcmp(newfather->name,"RC")) printf(":}");
+		    		else
+		        		printf("(%d)",newfather->lineno);
+		}
+		else
+		{
+			printf("Empty : Empty");
+		}
+		printf("\n");\
+		circulate(newfather->leftchild,level+1,flag);//遍历左子树
+		circulate(newfather->rightchild,level,flag);//遍历右子树
+	    }
     }
+    
 }
-void yyerror(char*s,...) //变长参数错误处理函数
+void yyerror( char*s,...) //变长参数错误处理函数
 {
     va_list ap;
     va_start(ap,s);
-    fprintf(stderr,"%d:error:",yylineno);//错误行号
-    vfprintf(stderr,s,ap);
-    fprintf(stderr,"\n");
+    fprintf(stderr,"Error type B at line %d:%s\n",yylineno,s);
+    //fprintf(stderr,"%d:error:",yylineno);//错误行号
+    //vfprintf(stderr,s,ap);
+    //fprintf(stderr,"\n");
 }
 /*int main()
 {
