@@ -25,7 +25,8 @@ struct gramtree *gramTree(char* name,int num,...)
 
         	if(num>=2) //可以规约到a的语法单元>=2
         	{
-            		for(int i=0; i<num-1; ++i)//取变长参数列表中的剩余结点，依次设置成兄弟结点
+			int i;
+            		for(i=0; i<num-1; ++i)//取变长参数列表中的剩余结点，依次设置成兄弟结点
             		{
                 		temp->rightchild=va_arg(valist,struct gramtree*);
                 		temp=temp->rightchild;
@@ -45,7 +46,14 @@ struct gramtree *gramTree(char* name,int num,...)
         	}
         	
         	else if(!strcmp(newfather->name,"INT")) {newfather->INT=atoi(yytext);}
-        	else {}
+        	else if(!strcmp(newfather->name,"INT8"))
+		{
+			newfather->INT=strtol(yytext,NULL,8);
+		}
+		else if(!strcmp(newfather->name,"INT16"))
+		{
+			newfather->INT=strtol(yytext,NULL,16);
+		}
     	}
     	return newfather;
 }
@@ -54,12 +62,15 @@ void circulate(struct gramtree* newfather,int level,int flag)
 	if(flag==1){
 		if(newfather!=NULL)
 	    	{
-			for(int i=0; i<level; ++i)//孩子结点相对父节点缩进2个空格
+			int i;
+			for(i=0; i<level; ++i)//孩子结点相对父节点缩进2个空格
 		    		printf("  ");
 			if(newfather->lineno!=-1){ //产生空的语法单元不需要打印信息
 		    		printf("%s ",newfather->name);//打印语法单元名字，ID/TYPE/INTEGER要打印yytext的值
 		    		if((!strcmp(newfather->name,"ID"))||(!strcmp(newfather->name,"TYPE"))||(!strcmp(newfather->name,"RELOP")))printf(":%s ",newfather->IDTYPE);
 		    		else if(!strcmp(newfather->name,"INT"))printf(":%d",newfather->INT);
+				else if(!strcmp(newfather->name,"INT8")) printf(":%d",newfather->INT);
+				else if(!strcmp(newfather->name,"INT16")) printf(":%d",newfather->INT);
 		    		else if(!strcmp(newfather->name,"STRUCT")) printf(":struct");
 		    		else if(!strcmp(newfather->name,"RETURN")) printf(":return");
 		    		else if(!strcmp(newfather->name,"WHILE")) printf(":while");

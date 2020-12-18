@@ -3,12 +3,13 @@
 	#include <stdio.h>
 	#include<string.h>
 	#include<regex.h>
-	#include"syntax7.tab.h"
+	#include"syntax.tab.h"
 	#include"gramtree.h"
 	FILE* f;
 	int column = 1;  //记录该行第几个字符
 	char n = '\n';   
 	char* nad=NULL;  //注释中换行符的位置
+	extern int flag;
 
 %}
 %option yylineno
@@ -93,6 +94,7 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     column+=yyleng;
     yylval.newfather=gramTree("ERROR",0,yylineno);
     //yylval = strtol(yytext,NULL,16);
+    flag = 0;
     return ERROR;
 }
 {INT8_ERROR} {
@@ -100,6 +102,7 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
     column+=yyleng;
     yylval.newfather=gramTree("ERROR",0,yylineno);
     //yylval = strtol(yytext,NULL,8);
+    flag = 0;
     return ERROR;
 }
 {STRUCT} {
@@ -257,11 +260,13 @@ IDERROR [a-zA-Z_][a-zA-Z0-9_]*[^ \n\t\f\r\p{Z}]*
 {FLOAT_ERROR} {
     printf("Error Type A at line %d,char %d:  Illgal float number: \"%s\"\n",yylineno,column,yytext);
     column+=yyleng;
+    flag = 0;
     return ERROR;
 }
 . { 
     printf("Error type A at line %d:Mysterious character '%s'\n",yylineno,yytext);
     column+=yyleng;
+    flag = 0;
 }
 
 %% 
